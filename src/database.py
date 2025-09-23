@@ -1,7 +1,7 @@
 import psycopg2
 from typing import List
-from db_config import DATABASE_CONFIG
-from vacancy import Company, Vacancy
+from src.db_config import DATABASE_CONFIG
+from src.vacancy import Company, Vacancy
 
 
 def create_database() -> None:
@@ -41,7 +41,7 @@ def create_tables() -> None:
         name TEXT NOT NULL,
         salary_from INTEGER,
         salary_to INTEGER,
-        url, TEXT NOT NULL,
+        url TEXT NOT NULL,
         company_id INTEGER REFERENCES companies(company_id)
     );
     """)
