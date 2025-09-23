@@ -1,5 +1,7 @@
-import psycopg2
 from typing import List
+
+import psycopg2
+
 from src.db_config import DATABASE_CONFIG
 from src.vacancy import Company, Vacancy
 
@@ -58,7 +60,8 @@ def insert_companies(companies: List[Company]) -> None:
     cur = conn.cursor()
     for company in companies:
         cur.execute(
-            "INSERT INTO companies (company_id, name, url) VALUES (%s, %s, %s) ON CONFLICT (company_id) DO NOTHING",
+            "INSERT INTO companies (company_id, name, url) VALUES "
+            "(%s, %s, %s) ON CONFLICT (company_id) DO NOTHING",
             (company.company_id, company.name, company.url)
         )
     conn.commit()
@@ -74,8 +77,15 @@ def insert_vacancies(vacancies: List[Vacancy]) -> None:
     cur = conn.cursor()
     for vacancy in vacancies:
         cur.execute(
-            "INSERT INTO vacancies (vacancy_id, name, salary_from, salary_to, url, company_id) VALUES (%s, %s, %s, %s, %s, %s) ON CONFLICT (vacancy_id) DO NOTHING",
-            (vacancy.vacancy_id, vacancy.name, vacancy.salary_from, vacancy.salary_to, vacancy.url, vacancy.company_id)
+            "INSERT INTO vacancies (vacancy_id, name, salary_from, salary_to, url, company_id) VALUES "
+            "(%s, %s, %s, %s, %s, %s) ON CONFLICT (vacancy_id) DO NOTHING",
+            (
+                vacancy.vacancy_id,
+                vacancy.name,
+                vacancy.salary_from,
+                vacancy.salary_to,
+                vacancy.url,
+                vacancy.company_id)
         )
     conn.commit()
     cur.close()

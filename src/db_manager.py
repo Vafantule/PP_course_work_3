@@ -1,13 +1,15 @@
+from typing import List, Optional, Tuple
+
 import psycopg2
+
 from src.db_config import DATABASE_CONFIG
-from typing import List, Tuple
 
 
 class DataBaseManager:
     """
     Класс управления данными в базе данных PostgreSQL.
     """
-    def __init__(self):
+    def __init__(self) -> None:
         """
         Инициализация соединения с БД.
         """
@@ -28,20 +30,21 @@ class DataBaseManager:
             """)
             return cur.fetchall()
 
-    def get_all_vacancies(self) -> List[Tuple[str, int]]:
+    def get_all_vacancies(self) -> List[Tuple[str, str, int, int, str]]:
         """
         Получение списка вакансий с указанными параметрами.
         """
         with self.conn.cursor() as cur:
             cur.execute("""
-            SELECT companies.name, vacancies.name, COALESCE(vacancies.salary_from, 0), COALESCE(vacancies.salary_to, 0), vacancies.url
+            SELECT companies.name, vacancies.name, COALESCE(vacancies.salary_from, 0),
+            COALESCE(vacancies.salary_to, 0), vacancies.url
             FROM vacancies
             JOIN companies ON vacancies.company_id = companies.company_id
             ORDER BY companies.name, vacancies.name
             """)
             return cur.fetchall()
 
-    def get_avg_salary(self) -> float:
+    def get_avg_salary(self) -> Optional[float]:
         """
         Получение средней зарплаты по вакансиям.
         """
@@ -50,9 +53,10 @@ class DataBaseManager:
                    SELECT AVG(COALESCE(salary_from, 0))
                    FROM vacancies
                    """)
-            return cur.fetchone()[0]
+            result = cur.fetchone()
+            return result[0] if result and result[0] is not None else None
 
-    def get_vacancies_with_higher_salary(self) -> List[Tuple[str, int]]:
+    def get_vacancies_with_higher_salary(self) -> List[Tuple[str, str, int, int, str]]:
         """
         Получение списка вакансий, с зарплатой выше средней.
         """
@@ -69,7 +73,7 @@ class DataBaseManager:
             """, (avg_salary, ))
             return cur.fetchall()
 
-    def get_vacancies_with_keyword(self, keyword: str) -> List[Tuple[str, int]]:
+    def get_vacancies_with_keyword(self, keyword: str) -> List[Tuple[str, str, int, int, str]]:
         """
         Получение списка вакансий, с заданными словами для отбора.
         """
