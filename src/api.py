@@ -12,7 +12,7 @@ class HHAPI:
         """
         Получает информацию о работодателе по ID.
         """
-        response = requests.get(f"{self.BASE_URL}/работодатели/{employer_id}")
+        response = requests.get(f"{self.BASE_URL}/employers/{employer_id}")
         response.raise_for_status()
         return response.json()
 
@@ -21,6 +21,6 @@ class HHAPI:
         Получает список вакансий работодателя.
         """
         params = {"employer_id": employer_id, "per_page": 100}
-        response = requests.get(f"{self.BASE_URL}/вакансии", params=params)
+        response = requests.get(f"{self.BASE_URL}/vacancies", params=params)
         response.raise_for_status()
         return response.json().get("items", [])

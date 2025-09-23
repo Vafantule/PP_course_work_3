@@ -1,5 +1,5 @@
 import psycopg2
-from db_config import DATABASE_CONFIG
+from src.db_config import DATABASE_CONFIG
 from typing import List, Tuple
 
 
@@ -34,7 +34,7 @@ class DataBaseManager:
         """
         with self.conn.cursor() as cur:
             cur.execute("""
-            SELECT companies.name, vacancies.name, COALESCE(vacancies.salary_from, 0), COALESCE(vacancies.salary_to, 0),vacancies.url
+            SELECT companies.name, vacancies.name, COALESCE(vacancies.salary_from, 0), COALESCE(vacancies.salary_to, 0), vacancies.url
             FROM vacancies
             JOIN companies ON vacancies.company_id = companies.company_id
             ORDER BY companies.name, vacancies.name
@@ -78,12 +78,12 @@ class DataBaseManager:
             SELECT companies.name, vacancies.name, COALESCE(salary_from, 0), COALESCE(salary_to, 0), vacancies.url
             FROM vacancies
             JOIN companies ON vacancies.company_id = companies.company_id
-            WHERE vacancies.name LIKE %s
+            WHERE vacancies.name ILIKE %s
             ORDER BY companies.name, vacancies.name
-            """, (f"{keyword}", ))
+            """, (f"%{keyword}%", ))
             return cur.fetchall()
 
-    def cose(self) -> None:
+    def close(self) -> None:
         """
         Закрывает соединение с БД.
         """
