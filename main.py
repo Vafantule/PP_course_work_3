@@ -1,9 +1,9 @@
 import requests
 
 from src.api import HHAPI
-from src.vacancy import Company, Vacancy
 from src.database import create_database, create_tables, insert_companies, insert_vacancies
 from src.db_manager import DataBaseManager
+from src.vacancy import Company, Vacancy
 
 
 def main() -> None:
